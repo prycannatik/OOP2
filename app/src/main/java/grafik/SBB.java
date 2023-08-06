@@ -124,8 +124,15 @@ public class SBB extends Application {
         refreshButton.setOnAction(e -> fetchAndDisplayData(null));
 
         // Konfigurieren Sie den Spinner.
-        rowSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 100, 100));
+        SpinnerValueFactory<Integer> valueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 100, 100);
+        rowSpinner.setValueFactory(valueFactory);
         rowSpinner.setEditable(true);
+
+        // TextFormatter hinzufügen, um nur numerische Eingaben zu erlauben
+        TextFormatter<Integer> formatter = new TextFormatter<>(valueFactory.getConverter(), valueFactory.getValue());
+        rowSpinner.getEditor().setTextFormatter(formatter);
+        valueFactory.valueProperty().bindBidirectional(formatter.valueProperty());
+
         rowSpinner.valueProperty().addListener((obs, oldValue, newValue) -> {
             if (newValue == null || newValue < 1 || newValue > 9999) {
                 rowSpinner.getValueFactory().setValue(100);
